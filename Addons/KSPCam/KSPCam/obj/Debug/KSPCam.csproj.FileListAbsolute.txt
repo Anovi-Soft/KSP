@@ -1,0 +1,5 @@
+C:\games\Kerbal Space Program\GameData\L0dom\KspCam\KSPCam.dll
+C:\games\Kerbal Space Program\GameData\L0dom\KspCam\KSPCam.pdb
+C:\Users\Andrew\Documents\GitHub\KSP\Addons\KSPCam\KSPCam\obj\Debug\KSPCam.dll
+C:\Users\Andrew\Documents\GitHub\KSP\Addons\KSPCam\KSPCam\obj\Debug\KSPCam.pdb
+C:\Users\Andrew\Documents\GitHub\KSP\Addons\KSPCam\KSPCam\obj\Debug\KSPCam.csprojResolveAssemblyReference.cache
