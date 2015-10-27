@@ -1,4 +1,0 @@
-C:\Users\Andrew\Documents\GitHub\KSP\Addons\KSPCam\KSPCam\bin\Release\KSPCam.dll
-C:\Users\Andrew\Documents\GitHub\KSP\Addons\KSPCam\KSPCam\bin\Release\KSPCam.pdb
-C:\Users\Andrew\Documents\GitHub\KSP\Addons\KSPCam\KSPCam\obj\Release\KSPCam.dll
-C:\Users\Andrew\Documents\GitHub\KSP\Addons\KSPCam\KSPCam\obj\Release\KSPCam.pdb

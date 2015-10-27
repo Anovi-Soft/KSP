@@ -5,14 +5,18 @@ using System.Text;
 
 namespace KSPCamera
 {
+    /// <summary>
+    /// Module adds an external camera and gives control over it
+    /// </summary>
     class CameraModule : PartModule, ICamPart
     {
         [KSPField(guiActive = true, guiActiveEditor = true, guiName = "Camera", isPersistant = true)]
         [UI_Toggle(controlEnabled = true, enabledText = "On", disabledText = "Off", scene = UI_Scene.All)]
         public bool IsEnabled;
-        PersonalCamera camera;
 
-        public override void OnStart(PartModule.StartState state = StartState.Flying)
+        PersonalCamera camera;
+        
+        public override void OnStart(StartState state = StartState.Flying)
         {
             if (state == StartState.Editor || camera != null)
                 return;
@@ -25,12 +29,14 @@ namespace KSPCamera
         }
         public override void OnUpdate()
         {
-            if (camera == null) return;
-            camera.Update();
+            if (camera == null)
+                return;
+            if (camera.IsActivate)
+                camera.Update();
             if (IsEnabled)
-                camera.Activate();
+                Activate();
             else
-                camera.Deavtivate();
+                Deavtivate();
         }
 
         public void Activate()
@@ -40,6 +46,8 @@ namespace KSPCamera
         public void Deavtivate()
         {
             camera.Deavtivate();
+            
         }
+        
     }
 }
