@@ -40,7 +40,7 @@ namespace KSPCamera
 
         public void Activate()
         {
-            if (TargetHelper.IsTargetSelect && new TargetHelper(part.gameObject).Destenetion <= 1000)
+            if (TargetHelper.IsTargetSelect && new TargetHelper(part).Destenetion <= 1000)
                 camera.Activate();
             else
             {
@@ -50,7 +50,7 @@ namespace KSPCamera
         }
         public void Deavtivate()
         {
-            camera.Deavtivate();
+            camera.Deactivate();
         }
     }
 }

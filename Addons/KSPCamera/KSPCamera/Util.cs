@@ -14,7 +14,7 @@ namespace KSPCamera
         /// <summary>
         /// Standard path to the folder with the textures
         /// </summary>
-        static string dataTexturePath = "L0dom/textures/";
+        static string dataTexturePath = "OLDD/DockingCam/";
 
         /// <summary>
         /// Load Texture2D from standard folder

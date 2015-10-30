@@ -14,19 +14,22 @@ namespace KSPCamera
         protected Rect texturePosition;
         protected int windowId;
         protected GameObject partGameObject;
+        protected Part part;
         protected string windowLabel;
+        protected string subWindowLabel;
         protected Texture bg;
+        ShaderType shaderType;
 
         protected int rotateX = 0;
         protected int rotateY = 0;
         protected int rotateZ = 0;
 
-        protected float minZoom = 10;
+        protected float minZoom = 2;
         protected float maxZoom = 80;
         protected float currentZoom = 40;
 
-        protected float windowSize = 260f;
-        protected float windowSizeCoef = 1f;
+        protected float windowSize = 130f;
+        protected int windowSizeCoef = 2;
 
         public bool IsActivate = false;
 
@@ -36,6 +39,8 @@ namespace KSPCamera
 
         public BaseKspCamera(Part part, string windowLabel = "Camera")
         {
+            this.part = part;
+            subWindowLabel = windowLabel;
             this.windowLabel = windowLabel;
             bg = Util.GetTexture(new Color(0.45f, 0.45f, 0.45f, 1));
             partGameObject = part.gameObject;
@@ -49,16 +54,16 @@ namespace KSPCamera
         protected virtual void InitWindow()
         {
             windowId = UnityEngine.Random.Range(1000, 10000);
-            if (windowPosition == null)
+            if (windowPosition != null)
             {
-                windowPosition = GUIUtil.ScreenCenteredRect(windowSize, windowSize + 10f);
-                windowPosition = new Rect(windowPosition.xMin + 10f * windowCount,
-                    windowPosition.yMin + 10f * windowCount,
-                    windowPosition.width,
-                    windowPosition.height);
-            }
-            else
-            {
+            //    //windowPosition = GUIUtil.ScreenCenteredRect(windowSize, windowSize + 10f);
+            //    //windowPosition = new Rect(windowPosition.xMin + 10f * windowCount,
+            //    //    windowPosition.yMin + 10f * windowCount,
+            //    //    windowPosition.width,
+            //    //    windowPosition.height);
+            //}
+            //else
+            //{
                 windowPosition.width = windowSize * windowSizeCoef;
                 windowPosition.height = windowSize * windowSizeCoef + 10f;
             }
@@ -69,7 +74,7 @@ namespace KSPCamera
         protected virtual void InitTexture()
         {
 
-            texturePosition = new Rect(7f, 15f, windowPosition.width - 14f, windowPosition.height - 24);
+            texturePosition = new Rect(7f, 20f, windowPosition.width - 14f, windowPosition.height - 24);
             renderTexture = new RenderTexture(512, 512, 24, RenderTextureFormat.RGB565);
             RenderTexture.active = renderTexture;
             renderTexture.Create();
@@ -114,7 +119,7 @@ namespace KSPCamera
         /// <summary>
         /// Destroy  cameras
         /// </summary>
-        public virtual void Deavtivate()
+        public virtual void Deactivate()
         {
             if (!IsActivate) return;
             DestroyCameras();
@@ -142,7 +147,7 @@ namespace KSPCamera
         /// </summary>
         protected virtual void ExtendedDrawWindowL1()
         {
-            Graphics.DrawTexture(texturePosition, Render());
+            Graphics.DrawTexture(texturePosition, Render(), CameraShaders.Get(shaderType));
         }
 
         /// <summary>
@@ -158,15 +163,39 @@ namespace KSPCamera
         /// </summary>
         protected virtual void ExtendedDrawWindowL3()
         {
+            if (GUI.Button(new Rect(7, texturePosition.yMax - 20, 20, 20), "☼"))
+            {
+                shaderType++;
+                if (!Enum.IsDefined(typeof(ShaderType), shaderType))
+                    shaderType = ShaderType.None;
+            }
             if (GUI.RepeatButton(new Rect(texturePosition.xMax - 10, texturePosition.yMax - 10, 9, 9), " "))
             {
-                windowSizeCoef = windowSizeCoef == 1f ? 2f : 1f;
-                Deavtivate();
+                switch (windowSizeCoef)
+                {
+                    case 2:
+                        windowSizeCoef = 3;
+                        break;
+                    case 3:
+                        windowSizeCoef = 4;
+                        break;
+                    case 4:
+                        windowSizeCoef = 2;
+                        break;
+                }
+                //windowSizeCoef = windowSizeCoef == 1f ? 2f : 1f;
+                Deactivate();
                 InitWindow();
                 InitTexture();
                 Activate();
 
             }
+            var left = windowPosition.width / 2 - 50;
+            currentZoom = GUI.HorizontalSlider(new Rect(left, 25, 100, 10),
+                currentZoom,
+                maxZoom,
+                minZoom
+                );
         }
         /// <summary>
         /// render texture camera

@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using UnityEngine;
 
 namespace KSPCamera
 {
@@ -14,6 +16,28 @@ namespace KSPCamera
         [UI_Toggle(controlEnabled = true, enabledText = "On", disabledText = "Off", scene = UI_Scene.All)]
         public bool IsEnabled;
 
+        [KSPField]
+        public string cameraName;
+        
+        [KSPField]
+        public string rotatorZ ;
+
+        [KSPField]
+        public string rotatorY;
+
+        [KSPField]
+        public string cap;
+
+        private GameObject capObject;
+
+        [KSPField]
+        public string zoommer;
+
+        [KSPField]
+        public float stepper;
+
+
+
         PersonalCamera camera;
         
         public override void OnStart(StartState state = StartState.Flying)
@@ -25,7 +49,8 @@ namespace KSPCamera
         public void Start()
         {
             if (camera == null)
-                camera = new PersonalCamera(this.part);
+                camera = new PersonalCamera(this.part, rotatorZ, rotatorY, zoommer, stepper, cap, cameraName);
+            capObject = part.gameObject.GetChild(cap);
         }
         public override void OnUpdate()
         {
@@ -41,12 +66,25 @@ namespace KSPCamera
 
         public void Activate()
         {
+            if (camera.IsActivate) return;
             camera.Activate();
+            StartCoroutine("CapRotator");
         }
         public void Deavtivate()
         {
-            camera.Deavtivate();
+            if (!camera.IsActivate) return;
+            camera.Deactivate();
+            StartCoroutine("CapRotator");
             
+        }
+        private IEnumerator CapRotator()
+        {
+            int step = camera.IsActivate ? 5 : -5;
+            for (int i = 0; i < 54; i++)
+            {
+                capObject.transform.Rotate(new Vector3(0, 1f, 0), step);
+                yield return new WaitForSeconds(1f / 270);
+            }
         }
         
     }
