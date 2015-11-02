@@ -25,13 +25,18 @@ namespace KSPCamera
         public float AngleX;
         public float AngleY;
         public float AngleZ;
+        public float Destenetion;
+        public bool isMoveToTarget;
+        public float SecondsToConnection;
+        private List<bool> moveToTargetSteps = new List<bool>(100);
 
         /// <param name="from">Object of comparison</param>
         public TargetHelper(Part from)
         {
             selfPart = from;
             self = selfPart.gameObject;
-            Update();
+            for (int i = 0; i < 100; i++)
+                moveToTargetSteps.Add(false);
         }
         public static ITargetable Target
         {
@@ -67,20 +72,19 @@ namespace KSPCamera
 
             Destenetion = (float)Math.Sqrt(Math.Pow(DX, 2) + Math.Pow(DY, 2) + Math.Pow(DZ, 2));
 
-            AngleX = AngleAroundNormal(targetTransform.forward, self.transform.forward, self.transform.up);
-            AngleY = AngleAroundNormal(targetTransform.forward, self.transform.forward, -self.transform.right);
-            AngleZ = AngleAroundNormal(-targetTransform.up, self.transform.up, self.transform.forward);
-            //var AngleYInverted = false;
-            if (Mathf.Abs(AngleX) > 90)
-                AngleY = invert(AngleY);
-            //AngleYInverted = true;
-            if (Mathf.Abs(AngleY) > 90)
-            {
-                AngleX = invert(AngleX);
-                AngleZ = invert(AngleZ);
-            }
-            //if (AngleYInverted)
-            //    AngleY = invert(AngleY);
+            AngleX = AngleAroundVector(-targetTransform.forward, self.transform.up, -self.transform.forward);
+            AngleY = AngleAroundVector(-targetTransform.forward, self.transform.up, self.transform.right);
+            AngleZ = AngleAroundVector(targetTransform.up, -self.transform.forward, -self.transform.up);
+            
+            SecondsToConnection = Destenetion / velocity.magnitude;
+
+            var timeX = (Mathf.Abs(DX) < .5f && DX * SpeedX < 0) ? SecondsToConnection : -DX / SpeedX;
+            var timeY = (Mathf.Abs(DY) < .5f && DY * SpeedY < 0) ? SecondsToConnection : -DY / SpeedY;
+            var timeZ = (Mathf.Abs(DZ) < .5f && DZ * SpeedZ < 0) ? SecondsToConnection : -DZ / SpeedZ;
+
+            isMoveToTarget = Mathf.Abs(SecondsToConnection - timeX) < 1 &&
+                Mathf.Abs(SecondsToConnection - timeY) < 1 &&
+                Mathf.Abs(SecondsToConnection - timeZ) < 1;
         }
 
         private static float invert(float angle)
@@ -88,13 +92,14 @@ namespace KSPCamera
             var sign = angle > 0 ? 1 : -1;
             return angle - sign * 180;
         }
-        public float Destenetion;
 
-        private static float AngleAroundNormal(Vector3 a, Vector3 b, Vector3 up)
+
+
+        private static float AngleAroundVector(Vector3 a, Vector3 b, Vector3 c)
         {
-            var v1 = Vector3.Cross(up, a);
-            var v2 = Vector3.Cross(up, b);
-            if (Vector3.Dot(Vector3.Cross(v1, v2), up) < 0)
+            var v1 = Vector3.Cross(c, a);
+            var v2 = Vector3.Cross(c, b);
+            if (Vector3.Dot(Vector3.Cross(v1, v2), c) < 0)
                 return -Vector3.Angle(v1, v2);
             return Vector3.Angle(v1, v2);
         }

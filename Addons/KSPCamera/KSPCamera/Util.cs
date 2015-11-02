@@ -15,7 +15,6 @@ namespace KSPCamera
         /// Standard path to the folder with the textures
         /// </summary>
         static string dataTexturePath = "OLDD/DockingCam/";
-
         /// <summary>
         /// Load Texture2D from standard folder
         /// </summary>
@@ -27,17 +26,46 @@ namespace KSPCamera
         }
 
         /// <summary>
+        /// Generate rectangle
+        /// </summary>
+        /// <param name="color"></param>
+        /// <returns></returns>
+        public static Texture2D MonoColorRectTexture(Color color)
+        {
+            return MonoColorTexture(color, 4, 4);
+        }
+        /// <summary>
+        /// Generate vertical line
+        /// </summary>
+        /// <param name="color"></param>
+        /// <param name="size"></param>
+        /// <returns></returns>
+        public static Texture2D MonoColorVerticalLineTexture(Color color, int size)
+        {
+            return MonoColorTexture(color, 1, size);
+        }
+        /// <summary>
+        /// Generate horizontal line
+        /// </summary>
+        /// <param name="color"></param>
+        /// <param name="size"></param>
+        /// <returns></returns>
+        public static Texture2D MonoColorHorizontalLineTexture(Color color, int size)
+        {
+            return MonoColorTexture(color, size, 1);
+        }
+
+        /// <summary>
         /// Texture generating a specific color
         /// </summary>
-        /// <param name="c">Color of texture</param>
+        /// <param name="color">Color of texture</param>
         /// <returns></returns>
-        public static Texture2D GetTexture(Color c)
+        public static Texture2D MonoColorTexture(Color color, int width, int height)
         {
-            Texture2D texture = new Texture2D(2, 2);
-            Color[] colors = new Color[4];
-            for (int i = 0; i < 4; i++)
-                colors[i] = c;
-            texture.SetPixels(colors);
+            var texture = new Texture2D(width, height);
+            for (var i = 0; i < width; i++)
+                for (var j = 0; j < height; j++)
+                    texture.SetPixel(i, j, color);
             texture.Apply();
             return texture;
         }

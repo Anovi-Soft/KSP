@@ -42,10 +42,9 @@ namespace KSPCamera
             this.part = part;
             subWindowLabel = windowLabel;
             this.windowLabel = windowLabel;
-            bg = Util.GetTexture(new Color(0.45f, 0.45f, 0.45f, 1));
             partGameObject = part.gameObject;
             InitWindow();
-            InitTexture();
+            InitTextures();
             windowCount++;
         }
         /// <summary>
@@ -56,14 +55,6 @@ namespace KSPCamera
             windowId = UnityEngine.Random.Range(1000, 10000);
             if (windowPosition != null)
             {
-            //    //windowPosition = GUIUtil.ScreenCenteredRect(windowSize, windowSize + 10f);
-            //    //windowPosition = new Rect(windowPosition.xMin + 10f * windowCount,
-            //    //    windowPosition.yMin + 10f * windowCount,
-            //    //    windowPosition.width,
-            //    //    windowPosition.height);
-            //}
-            //else
-            //{
                 windowPosition.width = windowSize * windowSizeCoef;
                 windowPosition.height = windowSize * windowSizeCoef + 10f;
             }
@@ -71,13 +62,14 @@ namespace KSPCamera
         /// <summary>
         /// Initializes texture
         /// </summary>
-        protected virtual void InitTexture()
+        protected virtual void InitTextures()
         {
 
             texturePosition = new Rect(7f, 20f, windowPosition.width - 14f, windowPosition.height - 24);
             renderTexture = new RenderTexture(512, 512, 24, RenderTextureFormat.RGB565);
             RenderTexture.active = renderTexture;
             renderTexture.Create();
+            bg = Util.MonoColorRectTexture(new Color(0.45f, 0.45f, 0.45f, 1));
         }
         /// <summary>
         /// Initializes camera
@@ -186,7 +178,7 @@ namespace KSPCamera
                 //windowSizeCoef = windowSizeCoef == 1f ? 2f : 1f;
                 Deactivate();
                 InitWindow();
-                InitTexture();
+                InitTextures();
                 Activate();
 
             }
